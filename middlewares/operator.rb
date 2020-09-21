@@ -12,29 +12,29 @@ module SwitchBoard
     KEEPALIVE_TIME = 15 # in seconds
 
     def initialize(app)
-      @app     = app
+      @app = app
       @message_broker_adapter = RedisMessageBrokerAdapter.new
     end
 
     def call(env)
-      if Faye::WebSocket.websocket?(env)       
+      if Faye::WebSocket.websocket?(env)
         create_websocket_connection env
       else
         broadcast env
 
         [204, {}, {}]
       end
-    rescue RequestSignatureError => _
+    rescue RequestSignatureError => _e
       @app.call(env)
     end
 
     private
-    
+
     def create_websocket_connection(env)
-      ws = Faye::WebSocket.new(env, nil, {ping: KEEPALIVE_TIME })
-      # TODO Extract some data to identify the user, 
-      #ideally passed as a token from another identity provider party 
-      user = nil 
+      ws = Faye::WebSocket.new(env, nil, { ping: KEEPALIVE_TIME })
+      # TODO: Extract some data to identify the user,
+      # ideally passed as a token from another identity provider party
+      user = nil
       @message_broker_adapter.subscribe user, ws
       # Return async Rack response
       ws.rack_response
@@ -43,9 +43,7 @@ module SwitchBoard
     def broadcast(env)
       signed_request! env
       payload = Rack::Request.new(env).params
-      unless payload.empty?
-        @message_broker_adapter.publish(payload['to'], payload)
-      end
+      @message_broker_adapter.publish(payload['to'], payload) unless payload.empty?
     end
   end
 end
