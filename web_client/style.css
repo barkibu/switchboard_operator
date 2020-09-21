@@ -1,0 +1,25 @@
+ol {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.message-container {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  flex-grow: 1;
+  background-color: lightgray;
+}
+
+.message-container > li {
+  background-color: lightskyblue;
+  padding: 5px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.message-container > .my-message {
+  background-color: lightblue;
+  align-self: flex-end;
+}
