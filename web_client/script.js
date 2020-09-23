@@ -4,10 +4,16 @@
   var messageForm = document.getElementById("message_form");
   var messageList = document.getElementById("message_list");
   var connectionForm = document.getElementById("connection_form");
+  var rollbackForm = document.getElementById("rollback_form");
+  var rollbackStepsInput = document.getElementById("rollback_steps");
   var buttonContainer = document.getElementById("button-container");
   let socket;
-  var currentPayload = {};
 
+  rollback = (e) => {
+    if (e.preventDefault) e.preventDefault();
+    const payload = { type: 'rollback', 'rollback_count': +rollbackStepsInput.value };
+    socket.send(JSON.stringify({ message: 'Rollback Request', payload }));
+  }
   sendMessage = (e) => { 
     if (e.preventDefault) e.preventDefault();
     socket.send(JSON.stringify({ message: messageInput.value }));
@@ -86,4 +92,5 @@
 
   
   connectionForm.addEventListener("submit", connectToBot);
+  rollbackForm.addEventListener("submit", rollback)
 })();
