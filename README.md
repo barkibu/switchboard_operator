@@ -5,7 +5,9 @@ Acts as a kind of Concierge balancer/proxy, taking care of maintaining the webso
 
 ## Architecture
 
-The work is leveraged by the Operator middleware, intercepting websocket handshakes and returning a Faye::Websocket connection, keeping a dictionary of opened connection to allow dispatching on the right one when receiving a HTTP signed message from the Concierge.
+Basic NodeJS express server to handle the message coming from the Concierge
+Custom Signature check to verify Concierge identity
+Websocket library used is https://github.com/websockets/ws.
 
 ## Scaling Issues
 
@@ -16,6 +18,6 @@ If we opt for 2 dynos to double our potential reach, we are not sure that the re
 
 The quick solution to this is to use redis pubsub and actually push the message to redis, all dynos listening to the redis to pass through the message down to the client.
 In the main lines:
-- One bot session = One Redis Channel
-- Each Dynos listen to all channels in a specific thread
+- Each message received from the concierge are pushed on a Redis Channel
+- Each Dynos listen to the channel
 - When an event is pushed onto a channel, the dyno looks for its in-memory dictionary and pushes to the websocket client if part of its dictionary.
