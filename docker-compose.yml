@@ -15,7 +15,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
-      - node_modules:/node_modules
+      - node_modules:/app/node_modules
     environment:
       - SWITCHBOARD_SECRET_KEY=$SWITCHBOARD_SECRET_KEY
       - CONCIERGE_URL=$CONCIERGE_URL

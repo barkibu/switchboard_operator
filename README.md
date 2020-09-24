@@ -9,6 +9,23 @@ Basic NodeJS express server to handle the message coming from the Concierge
 Custom Signature check to verify Concierge identity
 Websocket library used is https://github.com/websockets/ws.
 
+## Get Started
+- Copy the .env.example into .env and set the appropriate values
+- docker-compose run --rm switchboard_operator npm install
+- docker-compose up -d
+
+🥳 The server is up and running, listening on $SWITCHBOARD_PORT for Web Socket connections and on signed POST request to pass messages through to the web socket connections.
+
+An plain HTML/JS (no css 😅) web client for the bot is available in the [web_client](./web_client/index.html) directory.
+
+
+## Env Variables
+- **SWITCHBOARD_PORT** the port the application will be exposed on
+- **SWITCHBOARD_SECRET_KEY** Secret used to encrypt the userId into the client session (web socket connection)
+- **CONCIERGE_URL** is the url where the Concierge is expecting messages to be posted (Something like `http://concierge_host/incoming/postback`)
+- **CONCIERGE_POSTBACK_SECRET_KEY** The secret generated on the Concierge Instance used to verify the request receives actually come from the Concierge.
+- **REDISCLOUD_URL** is the Redis connection URL used in pubsub to allow this project to be scaled on multiple instances.
+
 ## Scaling Issues
 
 The connection between the concierge and the client (app / widget) is done through a websocket connection which comes with its limitations.
