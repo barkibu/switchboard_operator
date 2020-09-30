@@ -16,6 +16,7 @@ const PET_PARENT_MESSAGE_EVENT = "petParentMessage";
 
 const CONCIERGE_SECRET_KEY = process.env.CONCIERGE_POSTBACK_SECRET_KEY;
 const SWITCHBOARD_SECRET_KEY = process.env.SWITCHBOARD_SECRET_KEY;
+const SWITCHBOARD_PORT = process.env.SWITCHBOARD_PORT;
 
 const map = new Map();
 const eventEmitter = new events.EventEmitter();
@@ -35,6 +36,10 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 app.use(sessionParser);
+
+app.get("/", function(req, res) {
+  res.plain('Health Check 👨🏽‍⚕️').send();
+});
 
 app.post("/", function (req, res) {
   if (signatureChecker.isRequestSigned(req, CONCIERGE_SECRET_KEY)) {
@@ -76,6 +81,6 @@ wss.on("connection", function (ws, request) {
   });
 });
 
-server.listen(8080, "0.0.0.0", function () {
-  console.log("Listening on http://0.0.0.0:8080");
+server.listen(SWITCHBOARD_PORT, "0.0.0.0", function () {
+  console.log(`Listening on http://0.0.0.0:${SWITCHBOARD_PORT}`);
 });
