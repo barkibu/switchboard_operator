@@ -29,28 +29,32 @@ test(".setupBrokerListener listen to `message`", () => {
 });
 test(".setupBrokerListener listen to `end`", () => {
   petParentApi.setupBrokerListener(new Map());
-  expect(mockClient.on).toHaveBeenCalledWith("end", expect.anything());
+  expect(mockClient.on).toHaveBeenCalledWith("error", expect.anything());
 });
-test(".setupBrokerListener listen to `end`", () => {
+test(".setupBrokerListener `subscribe`", () => {
   petParentApi.setupBrokerListener(new Map());
   expect(mockClient.subscribe).toHaveBeenCalledWith("bot-message");
 });
 
-test("WWhen end is triggered, the subscription is re-called", () => {
-  var onEndListener;
+test("When error is triggered, the error is logged", () => {
+  originalErrorLogger = console.error;
+  console.error = jest.fn();
+  var onErrorListener;
   mockClient.on.mockImplementation((event, listener) => {
     switch (event) {
-      case "end": {
-        onEndListener = listener;
+      case "error": {
+        onErrorListener = listener;
         break;
       }
     }
   });
   petParentApi.setupBrokerListener(new Map());
 
-  expect(onEndListener).not.toBeNull();
-  onEndListener();
-  expect(mockClient.subscribe.mock.calls.length).toBe(2);
+  expect(onErrorListener).not.toBeNull();
+  const myError = "My Not Nice Error";
+  onErrorListener(myError);
+  expect(console.error).toHaveBeenCalledWith(expect.anything(), myError);
+  console.error = originalErrorLogger;
 });
 
 test("When message is triggered, send is called", () => {
@@ -58,7 +62,11 @@ test("When message is triggered, send is called", () => {
   const mockWS = { send: jest.fn() };
   const userId = "bob";
   map.set(userId, mockWS);
-  const message = JSON.stringify({ to: userId, foo: "bar", some: "other Attribute" });
+  const message = JSON.stringify({
+    to: userId,
+    foo: "bar",
+    some: "other Attribute",
+  });
   var onMessageListener;
   mockClient.on.mockImplementation((event, listener) => {
     switch (event) {

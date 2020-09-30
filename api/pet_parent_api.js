@@ -18,12 +18,16 @@ function getPublisher() {
   return publisher;
 }
 
+function logError(error) {
+  console.error('Redis connection errored!', error);
+}
+
 function setupRedisDownstreamListener(map) {
   if (!subscriber?.connected) {
     subscriber = getRedisClient();
   }
   subscriber.on("message", sendMessageToClient(map));
-  subscriber.on("end", () => setupRedisDownstreamListener(map));
+  subscriber.on("error", logError);
   subscriber.subscribe(DOWNSTREAM_CHANNEL);
 }
 
