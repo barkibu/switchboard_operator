@@ -1,6 +1,5 @@
 "use strict";
 
-const session = require("express-session");
 const express = require("express");
 const http = require("http");
 const uuid = require("uuid");
@@ -11,16 +10,9 @@ const conciergeApi = require("./api/concierge_api");
 const petParentApi = require("./api/pet_parent_api");
 
 const CONCIERGE_SECRET_KEY = process.env.CONCIERGE_POSTBACK_SECRET_KEY;
-const SWITCHBOARD_SECRET_KEY = process.env.SWITCHBOARD_SECRET_KEY;
 const SWITCHBOARD_PORT = process.env.SWITCHBOARD_PORT;
 
 const map = new Map();
-
-const sessionParser = session({
-  saveUninitialized: false,
-  secret: SWITCHBOARD_SECRET_KEY,
-  resave: false,
-});
 
 petParentApi.setupBrokerListener(map);
 
@@ -28,10 +20,9 @@ const app = express();
 
 app.use(express.static("public"));
 app.use(express.json());
-app.use(sessionParser);
 
-app.get("/", function(req, res) {
-  res.plain('Health Check 👨🏽‍⚕️').send();
+app.get("/", function (req, res) {
+  res.plain("Health Check 👨🏽‍⚕️").send();
 });
 
 app.post("/", function (req, res) {
@@ -47,21 +38,14 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
 
 server.on("upgrade", function (request, socket, head) {
-  sessionParser(request, {}, () => {
-    if (!request.session.userId) {
-      // Should find a way to not create a new  session  if the websocket just failed for a  while :/
-      const id = uuid.v4();
-      request.session.userId = id;  
-    }
-    
-    wss.handleUpgrade(request, socket, head, function (ws) {
-      wss.emit("connection", ws, request);
-    });
+  const userId = uuid.v4();
+
+  wss.handleUpgrade(request, socket, head, function (ws) {
+    wss.emit("connection", ws, request, userId);
   });
 });
 
-wss.on("connection", function (ws, request) {
-  const userId = request.session.userId;
+wss.on("connection", function (ws, request, userId) {
   map.set(userId, ws);
 
   ws.on("message", async function (message) {
