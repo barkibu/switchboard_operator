@@ -1,3 +1,0 @@
-require_relative './message_broker_adapter/message_broker_adapter'
-require_relative './message_broker_adapter/redis_message_broker_adapter'
-require_relative './message_broker_adapter/local_message_broker_adapter'

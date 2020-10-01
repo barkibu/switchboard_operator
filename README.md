@@ -5,7 +5,26 @@ Acts as a kind of Concierge balancer/proxy, taking care of maintaining the webso
 
 ## Architecture
 
-The work is leveraged by the Operator middleware, intercepting websocket handshakes and returning a Faye::Websocket connection, keeping a dictionary of opened connection to allow dispatching on the right one when receiving a HTTP signed message from the Concierge.
+Basic NodeJS express server to handle the message coming from the Concierge
+Custom Signature check to verify Concierge identity
+Websocket library used is https://github.com/websockets/ws.
+
+## Get Started
+- Copy the .env.example into .env and set the appropriate values
+- docker-compose run --rm switchboard_operator npm install
+- docker-compose up -d
+
+🥳 The server is up and running, listening on $SWITCHBOARD_PORT for Web Socket connections and on signed POST request to pass messages through to the web socket connections.
+
+An plain HTML/JS (no css 😅) web client for the bot is available in the [web_client](./web_client/index.html) directory.
+
+
+## Env Variables
+- **SWITCHBOARD_PORT** the port the application will be exposed on
+- **SWITCHBOARD_SECRET_KEY** Secret used to encrypt the userId into the client session (web socket connection)
+- **CONCIERGE_URL** is the url where the Concierge is expecting messages to be posted (Something like `http://concierge_host/incoming/postback`)
+- **CONCIERGE_POSTBACK_SECRET_KEY** The secret generated on the Concierge Instance used to verify the request receives actually come from the Concierge.
+- **REDISCLOUD_URL** is the Redis connection URL used in pubsub to allow this project to be scaled on multiple instances.
 
 ## Scaling Issues
 
@@ -16,6 +35,6 @@ If we opt for 2 dynos to double our potential reach, we are not sure that the re
 
 The quick solution to this is to use redis pubsub and actually push the message to redis, all dynos listening to the redis to pass through the message down to the client.
 In the main lines:
-- One bot session = One Redis Channel
-- Each Dynos listen to all channels in a specific thread
+- Each message received from the concierge are pushed on a Redis Channel
+- Each Dynos listen to the channel
 - When an event is pushed onto a channel, the dyno looks for its in-memory dictionary and pushes to the websocket client if part of its dictionary.

@@ -1,0 +1,26 @@
+{
+  "name": "switchboard_operator",
+  "version": "0.0.1",
+  "description": "Concierge(Stealth based) integration for Websocket Client",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "websocket",
+    "stealth-integration"
+  ],
+  "author": "Léo Figea (Barkibu)",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "crypto-js": "^4.0.0",
+    "express": "^4.16.4",
+    "redis": "^3.0.2",
+    "uuid": "^3.3.2",
+    "ws": "^7.3.1"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2"
+  }
+}

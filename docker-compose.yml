@@ -2,27 +2,27 @@ version: '3.8'
 
 services:
   message_broker:
-    image: redis
+    build:
+      context: ./message_broker
     volumes:
       - sessions:/data
     expose:
       - 6379
   switchboard_operator:
-    image: ruby
+    image: node:14
     ports:
-      - '5555:$SWITCHBOARD_PORT'
-    command: bundle exec puma -p 5555
+      - '$SWITCHBOARD_PORT:$SWITCHBOARD_PORT'
+    command: node app.js
     working_dir: /app
     volumes:
       - .:/app
-      - tmp:/app/tmp
-      - bundle:/usr/local/bundle
-    environment: 
-      - CONCIERGE_POSTBACK_SECRET_KEY=$POSTBACK_SECRET_KEY
-      - REDISCLOUD_URL=http://message_broker:6379
-      - RACK_ENV=development
+      - node_modules:/app/node_modules
+    environment:
+      - SWITCHBOARD_PORT=$SWITCHBOARD_PORT
+      - CONCIERGE_URL=$CONCIERGE_URL
+      - CONCIERGE_POSTBACK_SECRET_KEY=$CONCIERGE_POSTBACK_SECRET_KEY
+      - REDISCLOUD_URL=$REDISCLOUD_URL
 
 volumes:
   sessions:
-  bundle:
-  tmp:
+  node_modules:
