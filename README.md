@@ -38,3 +38,9 @@ In the main lines:
 - Each message received from the concierge are pushed on a Redis Channel
 - Each Dynos listen to the channel
 - When an event is pushed onto a channel, the dyno looks for its in-memory dictionary and pushes to the websocket client if part of its dictionary.
+
+## Idle in AWS
+
+While the websocket is open between the Pet Parent and the nodeJs server, if no message is send during more than 60s the connection will be dropped. This can be configured on AWS side: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html#connection-idle-timeout but to be noted that there are other (infrastructure) parties involved in the dance that might have their own idle timeout values...
+
+The websocket connection upgrade request accepts a session params that will be used as identifier of the pet parent. This way even if the connection drops, idle or the server goes down for a while, the client implementation can recover the session and keep chatting without having to start over.

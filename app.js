@@ -2,6 +2,7 @@
 
 const express = require("express");
 const http = require("http");
+const url = require("url");
 const uuid = require("uuid");
 const WebSocket = require("ws");
 
@@ -38,14 +39,15 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ clientTracking: false, noServer: true });
 
 server.on("upgrade", function (request, socket, head) {
-  const userId = uuid.v4();
-
   wss.handleUpgrade(request, socket, head, function (ws) {
-    wss.emit("connection", ws, request, userId);
+    wss.emit("connection", ws, request);
   });
 });
 
-wss.on("connection", function (ws, request, userId) {
+wss.on("connection", function (ws, request) {
+  const query = url.parse(request.url, true).query;
+  const userId = query.session || uuid.v4();
+
   map.set(userId, ws);
 
   ws.on("message", async function (message) {
