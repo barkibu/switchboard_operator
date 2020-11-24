@@ -27,4 +27,7 @@ stages:
       # requires_approval: true
       # Optional: use test commands to validate this stage of your build.
       # test_commands: [echo 'running tests', make test]
-
+    - # The name of the environment to deploy to.
+      name: production
+      requires_approval: true
+    
