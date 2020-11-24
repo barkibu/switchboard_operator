@@ -40,6 +40,9 @@ environments:
   staging:
     secrets:
       CONCIERGE_POSTBACK_SECRET_KEY: /concierge/staging/POSTBACK_SECRET_KEY
+  production:
+    secrets:
+      CONCIERGE_POSTBACK_SECRET_KEY: /concierge/production/POSTBACK_SECRET_KEY
 
 #  LOG_LEVEL: info
 #
