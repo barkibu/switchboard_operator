@@ -55,6 +55,12 @@ phases:
             jq --arg a "https://stackset-concierge-infra-pipelinebuiltartifactbuc-59j7rw0vcpmi.s3.eu-west-1.amazonaws.com/manual/$timestamp/$workload.addons.stack.yml" '.Parameters.AddonsTemplateURL = $a' ./infrastructure/$workload-production.params.json > "$tmp" && mv "$tmp" ./infrastructure/$workload-production.params.json
           fi
         done;
+      # Log into Docker to bypass the pull rate limit that docker enforces 
+      # as CodeBuild is using a shared account for all builds.
+      # A docker access token from the dev+concierge@barkibu.com account is stored in ssm
+      - aws ssm get-parameter --name /concierge/build/docker_access_token | jq '.Parameter.Value' | sed 's/"//g' >> .docker.key
+      - docker login -u bkbdevconcierge --password-stdin < .docker.key
+      - rm .docker.key
       # Build images
       # - For each manifest file:
       #   - Read the path to the Dockerfile by translating the YAML file into JSON.
