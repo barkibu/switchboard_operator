@@ -13,5 +13,5 @@ test('Sends the payload and message passed to the configurated url', async () =>
   const message = JSON.stringify({message: text_message, payload: payload, other: 'ignored'});
   
   await conciergeApi.sendMessage(userId, message);
-  expect(axios.post).toHaveBeenCalledWith(testUrl, {Body: text_message, Payload: payload, From: userId});
+  expect(axios.post).toHaveBeenCalledWith(testUrl + '/incoming/postback', {Body: text_message, Payload: payload, From: userId});
 });

@@ -22,7 +22,7 @@ An plain HTML/JS (no css 😅) web client for the bot is available in the [web_c
 ## Env Variables
 - **SWITCHBOARD_PORT** the port the application will be exposed on
 - **SWITCHBOARD_SECRET_KEY** Secret used to encrypt the userId into the client session (web socket connection)
-- **CONCIERGE_URL** is the url where the Concierge is expecting messages to be posted (Something like `http://concierge_host/incoming/postback`)
+- **CONCIERGE_URL** is the url where the Concierge is expecting messages to be posted (Something like `http://concierge_host`)
 - **CONCIERGE_POSTBACK_SECRET_KEY** The secret generated on the Concierge Instance used to verify the request receives actually come from the Concierge.
 - **REDISCLOUD_URL** is the Redis connection URL used in pubsub to allow this project to be scaled on multiple instances.
 

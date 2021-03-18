@@ -33,7 +33,7 @@ count: 1
 #
 variables:                    # Pass environment variables as key value pairs.
   REDISCLOUD_URL: redis://message-broker.concierge.local:6379
-  CONCIERGE_URL: http://bot.concierge.local/incoming/postback
+  CONCIERGE_URL: http://bot.concierge.local
   SWITCHBOARD_PORT: 80
 
 environments:

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README with motivation and architectural decision
 - Redis dependency for scalability
 - Axios dependency to post message to the Concierge
+- Expose Concierge Version on index page
 
 ## [0.0.1] - ????-??-??
 
