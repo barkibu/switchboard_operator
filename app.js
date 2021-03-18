@@ -5,6 +5,7 @@ const http = require("http");
 const url = require("url");
 const uuid = require("uuid");
 const WebSocket = require("ws");
+const engine = require("express-dot-engine");
 
 const signatureChecker = require("./services/signature_checker");
 const conciergeApi = require("./api/concierge_api");
@@ -18,12 +19,17 @@ const map = new Map();
 petParentApi.setupBrokerListener(map);
 
 const app = express();
+const path = require("path");
 
 app.use(express.static("public"));
+app.engine("dot", engine.__express);
+app.set("views", path.join(__dirname, "./views"));
+app.set("view engine", "dot");
 app.use(express.json());
 
-app.get("/", function (req, res) {
-  res.plain("Health Check 👨🏽‍⚕️").send();
+app.get("/", async function (req, res) {
+  const version = await conciergeApi.getVersion();
+  res.render("index", { conciergeVersion: version });
 });
 
 app.post("/", function (req, res) {
