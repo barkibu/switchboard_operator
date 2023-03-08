@@ -8,7 +8,7 @@ const request = {
     switch (header) {
       case "content-type":
         return "application/json";
-      case "content-md5":
+      case "x-authorization-content-sha256":
         return "HT7pfmQzVqiA/DMPqomcEA==";
       case "date":
         return "Thu, 24 Sep 2020 16:01:14 GMT";
