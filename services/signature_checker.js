@@ -11,7 +11,7 @@ function requestCredentials(req) {
 }
 
 function canonicalString(req) {
-  return `${req.method},${req.header('content-type')},${req.header('content-md5')},${req.url},${req.header('date')}`;
+  return `${req.method},${req.header('content-type')},${req.header('x-authorization-content-sha256')},${req.url},${req.header('date')}`;
 }
 
 function expectedSignature(req, key) {
